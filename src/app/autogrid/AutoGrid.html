@@ -1,0 +1,37 @@
+<!--Just to give the pagination a better look-->
+<style>
+.nav{border:solid 1px #777;float:left;padding:8px; margin:1px;  width:38px; text-align: center;}
+</style>
+<!--End of style-->
+<table class="table">
+  <tr>
+    <!--Generate column names ... loop on columns array-->
+    <th *ngFor="let col of Columns">{{col.colName}}
+      <!--If sorting is allow and its enabled for this column, we switch between ascending/descending-->
+    <a [hidden]="Direction==-1 || !AllowSorting || !col.sortable" (click)="Sort(col.colName,-1)">▲</a>
+    <a [hidden]="Direction==1 || !AllowSorting || !col.sortable" (click)="Sort(col.colName,1)">▼</a>
+    </th>
+    <!--For the delete link-->
+    <th [hidden]="!AllowDelete"></th>
+  </tr>
+  <!--Loop on the data-->
+  <tr *ngFor="let c of Data | AutoGridPipe : [SortBy,Direction]; let i = index;">
+    <td *ngFor="let col of Columns">{{c[col.colName]}}</td>
+      <!--show delete if enabled, and pass the whole row to OnDeleteRow-->
+      <td [hidden]="!AllowDelete"><a (click)="OnDeleteRow(c)">X</a></td>
+  </tr>
+</table>
+<!--Pagination-->
+<table class="table">
+  <tr>
+    <td>
+      <div style="margin:0px auto;" [style.width]="Width"><!--Width is calculated based on number of pages, to make it center-->
+      <div *ngFor="let pageIndex of Pages;let i = index;" class="nav">
+        <!--If this is the current page, page number displayed as a text only-->
+        <span [hidden]="PageIndex!=i">{{pageIndex}}</span>
+        <!--Page number dispalyed as a link, which call OnPageIndexChange and pass the new PageIndex + 1 -->
+        <a [hidden]="PageIndex==i" (click)="OnPageIndexChange(pageIndex)">{{pageIndex}}</a>
+      </div></div>
+    </td>
+  </tr>
+</table>
